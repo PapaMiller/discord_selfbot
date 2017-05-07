@@ -226,6 +226,7 @@ async def on_channel_delete(channel):
         
 @bot.command(pass_context=True)
 async def logserver(ctx, server_id):
+    """ Set bot to log messages from server id; only useful when not already logging all messages """
     isLogged = False
     server_name = None
     for server in bot.servers:
@@ -244,9 +245,14 @@ async def logserver(ctx, server_id):
         await bot.say(embed=discord.Embed(title="Error", type="rich", timestamp=datetime.utcnow(), colour=0xFF0000, description="'"+str(server_id)+"' is either not a server id, or you are not in the server!"))
 
 @bot.command(pass_context=True)
-async def getmessagesfrom(ctx, server_id):
+async def getmessagesfrom(ctx, server_id, amt=None):
+    """ Get all previous messages from server id, up to amount(defaults to message_channel_max in settings.json) """
     isLogged = False
     server_name = None
+    # make sure we are using an int, and not a string, or some other object
+    amt = int(amt) if amt is not None else None
+    if amt is None or amt <= 0:
+        amt = bot.message_channel_max
     for server in bot.servers:
         if server.id == server_id:
             server_name = server.name
@@ -256,7 +262,7 @@ async def getmessagesfrom(ctx, server_id):
             for channel in server.channels:
                 permissions = channel.permissions_for(server.get_member(bot.user.id))
                 if all(getattr(permissions, perm, None) == True for perm in ["read_messages", "read_message_history"]):
-                    async for message in bot.logs_from(channel, limit=bot.message_channel_max):
+                    async for message in bot.logs_from(channel, limit=amt):
                         log_message(message)
             log.info("====================== End Previous Message Dump for "+ server.name +" ======================")
             print("Finished logging previous messages for "+ server.name +".")

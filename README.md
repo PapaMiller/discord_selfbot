@@ -8,11 +8,14 @@ My own selfbot for Discord, using discord.py
 - When using the selfbot, any changes to status or game from the bot will not show up on your end. They do, however, show up to everyone else.
 
 ## Command List
-- \>setgame | sets Playing to whatever you pass in, or clears it if only ::setgame is called
+- \>setgame | sets Playing to whatever you pass in, or clears it if only \>setgame is called
 - \>setstatus | sets users status based on what was passed in. Defaults to "online" if nothing passed in
     - Available options are: online, idle, dnd, do_not_disturb, "do not disturb", invisible, offline
 - \>getgame | returns the current game name
 - \>getstatus | returns the current user status
+- \>getmessagesfrom \<server id\> | get past messages from server id
+    - \>getmessagesfrom \<server id\> \<amount\> | get past messages from server id, up to passed in amount (defaults to message_channel_max in settings.json if not passed in)
+- \>logserver \<server id\> | set bot to log messages from server id; only useful if log_all_messages is false
 - \>killbot | shuts down the selfbot
 - \>help | returns help stetement for commands
     - \>help \<command\> | return help statement for specific command
