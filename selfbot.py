@@ -306,14 +306,14 @@ def cleanup_handlers():
         log.removeHandler(handle)
 
 def get_settings():
-    if not os.path.isfile('settings.json'):
+    if not os.path.isfile(os.path.dirname(os.path.abspath(sys.argv[0]))+'./settings.json'):
         # file doesn't exist, create one!
-        f = open('settings.json', 'w')
+        f = open(os.path.dirname(os.path.abspath(sys.argv[0]))+'./settings.json', 'w')
         f.write(json.dumps({"token":"", "log_all_messages_on_start": False, "log_all_messages": False, "log_on_server_join": False, "log_private_channels": False, "log_new_private_channels": False, "ignore_bot_chat": True, "ignore_own_messages": True, "message_global_max": 100000, "message_channel_max": 5000, "unflip_tables": False, "unflip_own_tables": False}, indent=4))
         f.close()
         f = None
     # this should ALWAYS execute
-    with open('settings.json') as f:
+    with open(os.path.dirname(os.path.abspath(sys.argv[0]))+'./settings.json') as f:
         return json.load(f)
 
 def parse_commandline(argv):
