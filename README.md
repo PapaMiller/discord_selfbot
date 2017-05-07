@@ -16,6 +16,8 @@ My own selfbot for Discord, using discord.py
 - \>getmessagesfrom \<server id\> | get past messages from server id
     - \>getmessagesfrom \<server id\> \<amount\> | get past messages from server id, up to passed in amount (defaults to message_channel_max in settings.json if not passed in)
 - \>logserver \<server id\> | set bot to log messages from server id; only useful if log_all_messages is false
+- \>setunflip \<true/false\> | sets what the bot does if it sees a "flipped table"; if true, "unflips" table
+- \>setunflipself \<true/false\> | sets what the bot does if you "flip" a table; if true, "unflips" your "flipped" table
 - \>killbot | shuts down the selfbot
 - \>help | returns help stetement for commands
     - \>help \<command\> | return help statement for specific command
@@ -36,6 +38,8 @@ My own selfbot for Discord, using discord.py
                                   // don't change if you aren't sure what this does
     "message_channel_max": 5000 // see limit from https://discordpy.readthedocs.io/en/latest/api.html#discord.Client.logs_from
                                 // don't change if you aren't sure what this does
+    "unflip_tables": false,     // do we "unflip" "flipped" tables?
+    "unflip_own_tables": false  // do we "unflip" our own "flipped" tables?
 }
 ```
     

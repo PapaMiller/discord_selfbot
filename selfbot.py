@@ -199,6 +199,13 @@ async def on_message(message):
         log_message(message)
     elif bot.log_private_channels or message.channel.id in bot.log_private_channels_list:
         log_message(message)
+        
+    # do we want to unflip all the flipped tables?
+    if bot.unflip_tables and "(╯°□°）╯︵ ┻━┻" in message.content:
+        # if we don't want to unflip our own flipped tables, return
+        if message.author.id == bot.user.id and not bot.unflip_own_tables:
+            return
+        await bot.send_message(message.channel, "┬─┬﻿ ノ( ゜-゜ノ)")
     # check to see if user wants to run a command
     await bot.process_commands(message)
     
@@ -272,7 +279,25 @@ async def getmessagesfrom(ctx, server_id, amt=None):
         await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0x00FF00, description=server_name+" was logged successfully!"))
     else:
         await bot.say(embed=discord.Embed(title="Error", type="rich", timestamp=datetime.utcnow(), colour=0xFF0000, description="'"+str(server_id)+"' is either not a server id, or you are not in the server!"))
+        
+@bot.command(pass_context=True)
+async def setunflip(ctx, doUnflip : str):
+    """ Sets whether the bot will unflip tables or not """
+    bot.unflip_tables = (True if doUnflip.lower() == "true" else False)
+    if bot.unflip_tables:
+        await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0x00FF00, description=bot.user.name+" has the energy to unflip all the flipped tables!"))
+    else:
+        await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0xFFFF00, description=bot.user.name+" is now tired from unflipping all the tables!"))
     
+@bot.command(pass_context=True)
+async def setunflipself(ctx, doUnflip : str):
+    """ Sets whether the bot will unflip own tables or not """
+    bot.unflip_own_tables = (True if doUnflip.lower() == "true" else False)
+    if bot.unflip_own_tables:
+        await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0x00FF00, description=bot.user.name+" is now unflipping their own flipped tables!\nHow strange..."))
+    else:
+        await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0x00FF00, description=bot.user.name+" is no longer unflipping their own flipped tables! (finally...)"))
+
 def cleanup_handlers():
     # Clean up log handles
     handles = log.handlers[:]
@@ -284,7 +309,7 @@ def get_settings():
     if not os.path.isfile('settings.json'):
         # file doesn't exist, create one!
         f = open('settings.json', 'w')
-        f.write(json.dumps({"token":"", "log_all_messages_on_start": False, "log_all_messages": False, "log_on_server_join": False, "log_private_channels": False, "log_new_private_channels": False, "ignore_bot_chat": True, "ignore_own_messages": True, "message_global_max": 100000, "message_channel_max": 5000}, indent=4))
+        f.write(json.dumps({"token":"", "log_all_messages_on_start": False, "log_all_messages": False, "log_on_server_join": False, "log_private_channels": False, "log_new_private_channels": False, "ignore_bot_chat": True, "ignore_own_messages": True, "message_global_max": 100000, "message_channel_max": 5000, "unflip_tables": False, "unflip_own_tables": False}, indent=4))
         f.close()
         f = None
     # this should ALWAYS execute
@@ -351,6 +376,10 @@ if __name__ == '__main__':
     bot.message_global_max = settings.get('message_global_max', 100000)
     # this states how many previous messages to log per channel; change to your liking in settings.json
     bot.message_channel_max = settings.get('message_channel_max', 5000)
+    # Do we unflip peoples flipped tables? >:)
+    bot.unflip_tables = settings.get('unflip_tables', False)
+    # Do we unflip our own tables? (why...)
+    bot.unflip_own_tables = settings.get('unflip_own_tables', False)
     # set these to nothing
     bot.log_servers = []
     bot.log_private_channels_list = []
