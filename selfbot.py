@@ -36,10 +36,10 @@ discord_logger = logging.getLogger('discord')
 discord_logger.setLevel(logging.CRITICAL)
 log = logging.getLogger()
 log.setLevel(logging.INFO)
-if not os.path.exists("logs"):
-    os.makedirs("logs")
+if not os.path.exists(os.path.dirname(os.path.abspath(sys.argv[0]))+"logs"):
+    os.makedirs(os.path.dirname(os.path.abspath(sys.argv[0]))+"logs")
 dt = datetime.now()
-handler = logging.FileHandler(filename='./logs/selfbot.'+dt.strftime('%Y-%m-%d-%H%M%S.%f')+'.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(filename=os.path.dirname(os.path.abspath(sys.argv[0]))+'./logs/selfbot.'+dt.strftime('%Y-%m-%d-%H%M%S.%f')+'.log', encoding='utf-8', mode='w')
 dt = None
 log.addHandler(handler)
 
