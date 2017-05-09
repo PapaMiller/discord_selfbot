@@ -16,7 +16,8 @@ import logging
 import traceback
 import json
 import os.path
-from os import mkdir, sep
+from os import mkdir, sep, chmod
+import stat
 
 try:
     import uvloop
@@ -319,6 +320,8 @@ def get_settings():
         f.write(json.dumps({"token":"", "log_all_messages_on_start": False, "log_all_messages": False, "log_on_server_join": False, "log_private_channels": False, "log_new_private_channels": False, "ignore_bot_chat": True, "ignore_own_messages": True, "message_global_max": 100000, "message_channel_max": 5000, "unflip_tables": False, "unflip_own_tables": False}, indent=4))
         f.close()
         f = None
+        # set read+write for owner only (*nix systems only)
+        os.chmod(SCRIPT_PATH+'settings.json', 0o600)
     # this should ALWAYS execute
     with open(SCRIPT_PATH+'settings.json') as f:
         return json.load(f)
