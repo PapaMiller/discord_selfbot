@@ -315,8 +315,7 @@ def cleanup_handlers():
 def get_settings():
     if not os.path.isfile(SCRIPT_PATH+'settings.json'):
         # file doesn't exist, create one!
-        # make settings.json only readable/writable by owner (*nix only?)
-        f = open(SCRIPT_PATH+'settings.json', 'w', mode=0o600)
+        f = open(SCRIPT_PATH+'settings.json', 'w')
         f.write(json.dumps({"token":"", "log_all_messages_on_start": False, "log_all_messages": False, "log_on_server_join": False, "log_private_channels": False, "log_new_private_channels": False, "ignore_bot_chat": True, "ignore_own_messages": True, "message_global_max": 100000, "message_channel_max": 5000, "unflip_tables": False, "unflip_own_tables": False}, indent=4))
         f.close()
         f = None
