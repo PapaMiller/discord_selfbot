@@ -64,20 +64,22 @@ def log_message(message):
     if bot.ignore_own_messages and message.author.id == bot.user.id:
         return
 
-    if message.embeds:
+    if message.embeds or message.attachments:
         # we have embeds; append those
         # we might have content (probably not though), but append just in case
         msg = ""
-        if message.content.strip() != "":
+        if message.clean_content.strip() != "":
             # only append message.content if there is anything to print
-            msg = "\n" + message.content
+            msg = "\n" + message.clean_content
         for embed in message.embeds:
             msg += "\n" + json.dumps(embed, indent=4)
-    elif "\n" in message.content:
+        for attachment in message.attachments:
+            msg += "\n" + json.dumps(attachment, indent=4)
+    elif "\n" in message.clean_content:
         # message is multiline; let's not make it "ugly" for the user in the log
-        msg = "\n" + message.content
+        msg = "\n" + message.clean_content
     else:
-        msg = message.content
+        msg = message.clean_content
 
     # log ze message!
     log.info("[%s] %sChannel: %s, User: %s#%s(%s), Message: %s",
