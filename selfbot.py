@@ -16,7 +16,7 @@ import logging
 import traceback
 import json
 import os.path
-from os import makedirs
+from os import mkdir, sep
 
 try:
     import uvloop
@@ -32,14 +32,21 @@ def usage(prog):
     print('Usage: {} [-h|--help] {}{}'.format(prog,'--token=','<token>'))
     print('Or, place your token in \'settings.json\'!')
 
+# make sure path ends with \ (for windows) or / (for *nix systems)
+# fixes bug for *nix systems using previous commits of script
+SCRIPT_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
+# append '\' (windows)/'/' (*nix) if not already there
+SCRIPT_PATH = SCRIPT_PATH if SCRIPT_PATH.endswith(os.sep) else SCRIPT_PATH + os.sep
+
 discord_logger = logging.getLogger('discord')
 discord_logger.setLevel(logging.CRITICAL)
 log = logging.getLogger()
 log.setLevel(logging.INFO)
-if not os.path.exists(os.path.dirname(os.path.abspath(sys.argv[0]))+"logs"):
-    os.makedirs(os.path.dirname(os.path.abspath(sys.argv[0]))+"logs")
+if not os.path.exists(SCRIPT_PATH+"logs"):
+    # python 3 requires octals to be prepended with '0o' (why...)
+    os.mkdir(SCRIPT_PATH+"logs", 0o700)
 dt = datetime.now()
-handler = logging.FileHandler(filename=os.path.dirname(os.path.abspath(sys.argv[0]))+'./logs/selfbot.'+dt.strftime('%Y-%m-%d-%H%M%S.%f')+'.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(filename=SCRIPT_PATH+'logs/selfbot.'+dt.strftime('%Y-%m-%d-%H%M%S.%f')+'.log', encoding='utf-8', mode='w')
 dt = None
 log.addHandler(handler)
 
@@ -306,14 +313,14 @@ def cleanup_handlers():
         log.removeHandler(handle)
 
 def get_settings():
-    if not os.path.isfile(os.path.dirname(os.path.abspath(sys.argv[0]))+'./settings.json'):
+    if not os.path.isfile(SCRIPT_PATH+'settings.json'):
         # file doesn't exist, create one!
-        f = open(os.path.dirname(os.path.abspath(sys.argv[0]))+'./settings.json', 'w')
+        f = open(SCRIPT_PATH+'settings.json', 'w')
         f.write(json.dumps({"token":"", "log_all_messages_on_start": False, "log_all_messages": False, "log_on_server_join": False, "log_private_channels": False, "log_new_private_channels": False, "ignore_bot_chat": True, "ignore_own_messages": True, "message_global_max": 100000, "message_channel_max": 5000, "unflip_tables": False, "unflip_own_tables": False}, indent=4))
         f.close()
         f = None
     # this should ALWAYS execute
-    with open(os.path.dirname(os.path.abspath(sys.argv[0]))+'./settings.json') as f:
+    with open(SCRIPT_PATH+'settings.json') as f:
         return json.load(f)
 
 def parse_commandline(argv):
