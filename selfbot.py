@@ -148,7 +148,7 @@ def get_status_color():
         return 0x000000
 
 @bot.command(pass_context=True)
-async def setgame(ctx, game_name : str = None):
+async def setgame(ctx, *, game_name : str = None):
     """Sets/Clears users game"""
     if game_name is None:
         print("Erasing game status")
@@ -161,7 +161,7 @@ async def setgame(ctx, game_name : str = None):
     await bot.say(embed=discord.Embed(title="Game Status", type="rich", timestamp=datetime.utcnow(), colour=0x00FF00, description="Setting game to \"{}\"".format(bot.game_name)))
 
 @bot.command(pass_context=True)
-async def setstatus(ctx, status : str = None):
+async def setstatus(ctx, *, status : str = None):
     """Sets status to passed in status; defaults to 'online'"""
     if status is None:
         bot.status = discord.Status.online

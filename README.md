@@ -10,7 +10,7 @@ My own selfbot for Discord, using discord.py
 ## Command List
 - \>setgame | sets Playing to whatever you pass in, or clears it if only \>setgame is called
 - \>setstatus | sets users status based on what was passed in. Defaults to "online" if nothing passed in
-    - Available options are: online, idle, dnd, do_not_disturb, "do not disturb", invisible, offline
+    - Available options are: online, idle, dnd, do_not_disturb, do not disturb, invisible, offline
 - \>getgame | returns the current game name
 - \>getstatus | returns the current user status
 - \>getmessagesfrom \<server id\> | get past messages from server id
