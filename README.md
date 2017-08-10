@@ -18,10 +18,13 @@ My own selfbot for Discord, using discord.py
 - \>logserver \<server id\> | set bot to log messages from server id; only useful if log_all_messages is false
 - \>setunflip \<true/false\> | sets what the bot does if it sees a "flipped table"; if true, "unflips" table
 - \>setunflipself \<true/false\> | sets what the bot does if you "flip" a table; if true, "unflips" your "flipped" table
+- \>getpfp \<user name or mention\> | grabs the user's profile picture, as a rich embed (assuming the user is in the server, and assuming the user can be found)
+    - Note: This command is the only command message that is deleted upon execution
+    - Returns an error message, as a rich embed, if the user string supplied could not be found
 - \>killbot | shuts down the selfbot
-- \>help | returns help stetement for commands
+- \>help | returns help statement for commands
     - \>help \<command\> | return help statement for specific command
-    
+
 ## Explanation of settings in settings.json file
 ##### Note: Do NOT copy and paste the settings below with the comments into settings.json as is! (comments are not allowed in json)
 ```js
@@ -42,7 +45,7 @@ My own selfbot for Discord, using discord.py
     "unflip_own_tables": false  // do we "unflip" our own "flipped" tables?
 }
 ```
-    
+
 ## How to run
 1. Install [discord.py](https://github.com/Rapptz/discord.py#installing)
 2. Open up discord and open the inspector window (`CTRL` + `SHIFT` + `I`)

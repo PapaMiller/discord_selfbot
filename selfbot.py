@@ -1,6 +1,6 @@
 """
     Copyright (c) 2017 Gustavo Cortes
-    
+
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
     file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -101,7 +101,7 @@ async def on_command_error(error, ctx):
     elif isinstance(error, commands.CommandInvokeError):
         print('In {0.command.qualified_name}:'.format(ctx), file=sys.stderr)
         traceback.print_tb(error.original.__traceback__)
-        print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr) 
+        print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr)
 
 @bot.event
 async def on_ready():
@@ -198,7 +198,7 @@ async def killbot(ctx):
     print("Shutting down selfbot")
     await bot.say(embed=discord.Embed(title="Bot Status", type="rich", timestamp=datetime.utcnow(), colour=0x747F8D, description="Shutting down bot..."))
     await bot.close()
-    
+
 @bot.event
 async def on_message(message):
     # if author is bot, return
@@ -209,7 +209,7 @@ async def on_message(message):
         log_message(message)
     elif bot.log_private_channels or message.channel.id in bot.log_private_channels_list:
         log_message(message)
-        
+
     # do we want to unflip all the flipped tables?
     if bot.unflip_tables and "(╯°□°）╯︵ ┻━┻" in message.content:
         # if we don't want to unflip our own flipped tables, return
@@ -218,29 +218,29 @@ async def on_message(message):
         await bot.send_message(message.channel, "┬─┬﻿ ノ( ゜-゜ノ)")
     # check to see if user wants to run a command
     await bot.process_commands(message)
-    
+
 @bot.event
 async def on_server_join(server):
     if bot.log_on_server_join:
         bot.log_servers.append(server.id)
-        
+
 @bot.event
 async def on_server_remove(server):
     if server.id in bot.log_servers:
         bot.log_servers.remove(server.id)
-        
+
 @bot.event
 async def on_channel_create(channel):
     if channel.is_private:
         if bot.log_new_private_channels:
             bot.log_private_channels_list.append(channel.id)
-            
+
 @bot.event
 async def on_channel_delete(channel):
     if channel.is_private:
         if channel.id in bot.log_private_channels_list:
             bot.log_private_channels_list.remove(channel.id)
-        
+
 @bot.command(pass_context=True)
 async def logserver(ctx, server_id):
     """ Set bot to log messages from server id; only useful when not already logging all messages """
@@ -289,7 +289,7 @@ async def getmessagesfrom(ctx, server_id, amt=None):
         await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0x00FF00, description=server_name+" was logged successfully!"))
     else:
         await bot.say(embed=discord.Embed(title="Error", type="rich", timestamp=datetime.utcnow(), colour=0xFF0000, description="'"+str(server_id)+"' is either not a server id, or you are not in the server!"))
-        
+
 @bot.command(pass_context=True)
 async def setunflip(ctx, doUnflip : str):
     """ Sets whether the bot will unflip tables or not """
@@ -298,7 +298,7 @@ async def setunflip(ctx, doUnflip : str):
         await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0x00FF00, description=bot.user.name+" has the energy to unflip all the flipped tables!"))
     else:
         await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0xFFFF00, description=bot.user.name+" is now tired from unflipping all the tables!"))
-    
+
 @bot.command(pass_context=True)
 async def setunflipself(ctx, doUnflip : str):
     """ Sets whether the bot will unflip own tables or not """
@@ -307,6 +307,16 @@ async def setunflipself(ctx, doUnflip : str):
         await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0x00FF00, description=bot.user.name+" is now unflipping their own flipped tables!\nHow strange..."))
     else:
         await bot.say(embed=discord.Embed(title="Success", type="rich", timestamp=datetime.utcnow(), colour=0x00FF00, description=bot.user.name+" is no longer unflipping their own flipped tables! (finally...)"))
+
+@bot.command(pass_context=True)
+async def getpfp(ctx, *, user : str):
+    """ Grabs a user's profile picture url """
+    member = discord.utils.get(ctx.message.server.members, display_name=user) or discord.utils.get(ctx.message.server.members, name=user) or discord.utils.get(ctx.message.server.members, mention=user)
+    await bot.delete_message(ctx.message)
+    if member is not None:
+        await bot.say(embed=discord.Embed(type="rich", timestamp=datetime.utcnow(), color=0x00FF00, title="{}'s profile picture".format(member.display_name), url=member.avatar_url).set_image(url=member.avatar_url))
+    else:
+        await bot.say(embed=discord.Embed(type="rich", timestamp=datetime.utcnow(), color=0xFF0000, description="User {} not found!".format(user)))
 
 def cleanup_handlers():
     # Clean up log handles
